@@ -48,3 +48,25 @@ contactForm?.addEventListener('submit', (event) => {
   const body = `Name: ${formData.get('firstName')} ${formData.get('surname')}\nPhone: ${formData.get('phone')}\n\nMessage:\n${formData.get('message')}`;
   window.location.href = `mailto:kuthala@izikomissions.org?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 });
+
+const giveForm = document.querySelector('#give-form');
+const customAmount = document.querySelector('#custom-amount');
+
+giveForm?.querySelectorAll('input[name="amount"]').forEach((input) => {
+  input.addEventListener('change', () => {
+    const isCustom = input.value === 'custom' && input.checked;
+    customAmount.disabled = !isCustom;
+    customAmount.required = isCustom;
+    if (isCustom) customAmount.focus();
+  });
+});
+
+giveForm?.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const formData = new FormData(giveForm);
+  const selectedAmount = formData.get('amount') === 'custom' ? `R${customAmount.value}` : formData.get('amount');
+  const frequency = formData.get('frequency') === 'monthly' ? 'monthly gift' : 'one-time gift';
+  const subject = `Giving to Magnify Church: ${selectedAmount} ${frequency}`;
+  const body = `Hello Magnify Church,\n\nI would like to make a ${selectedAmount} ${frequency}. Please send me the giving or payment details.\n\nThank you.`;
+  window.location.href = `mailto:kuthala@izikomissions.org?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+});
